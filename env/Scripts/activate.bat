@@ -1,5 +1,5 @@
 @echo off
-set "VIRTUAL_ENV=C:\sunitha\projects\FlaskWebProject1\FlaskWebProject1\env"
+set "VIRTUAL_ENV=C:\sunitha\projects\navaras1\navaras1\env"
 
 if defined _OLD_VIRTUAL_PROMPT (
     set "PROMPT=%_OLD_VIRTUAL_PROMPT%"
