@@ -3,9 +3,22 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template
+from flask import render_template, request, redirect, url_for
 from navaras import app
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import create_engine
+from flask_sqlalchemy import SQLAlchemy
+from databasenew import Movies
+from sqlalchemy.ext.declarative import declarative_base
 
+
+Base = declarative_base()
+engine = create_engine('sqlite:///navaras_qa.db')
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind=engine)
+dbsession = DBSession()
 
 @app.route('/')
 @app.route('/home')
@@ -20,8 +33,53 @@ def home():
 
 @app.route('/movies')
 def movies():
-    return render_template('movies/index.html')
+    try:
+        #movies = dbsession.query(Movies).filter(Movies.youtube_id != None).all()
+        movies = Movies.query.filter(Movies.youtube_id != None).paginate(page=1, per_page=20)
 
+    except NoResultFound:
+        None
+
+    return render_template('movies/index.html', movies=movies)
+
+
+@app.route('/movies/list/<int:year>')
+def movielist(year):
+    try:
+        movies = dbsession.query(Movies).filter(Movies.year == year).all()
+    except NoResultFound:
+        None
+
+    return render_template('movies/list.html', list=movies)
+
+
+@app.route('/movieEdit/<int:movie_id>', methods=['GET','POST'])
+def movieEdit(movie_id):
+    try:
+        movie = dbsession.query(Movies).filter(Movies.id == movie_id).one()
+    except NoResultFound:
+        None
+
+    if request.method == 'POST':
+        movie.title = request.form['title']
+        movie.directedBy = request.form['directedBy']
+        movie.producedBy = request.form['producedBy']
+        movie.starringBy = request.form['starringBy']
+        movie.genre = request.form['genre']
+        movie.year = request.form['year']
+        movie.musicBy = request.form['musicBy']
+        movie.language_id = request.form['language_id']
+        movie.youtube_id = request.form['youtube_id']
+        movie.ref = request.form['ref']
+        movie.yt_thumbnail = 'http://img.youtube.com/vi/'+movie.youtube_id+'/mqdefault.jpg'
+        movie.yt_videolink = 'https://www.youtube.com/embed/'+movie.youtube_id
+        dbsession.add(movie)
+        dbsession.commit()
+
+        return redirect(url_for('movielist', year=movie.year), code=302)
+
+    else:
+        return render_template('/movies/edit.html', movie=movie)
 
 
 @app.route('/contact')

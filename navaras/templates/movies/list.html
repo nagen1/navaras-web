@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container">
+        <h4>List</h4>
+
+
+        <div class="section">
+            <h6></h6>
+        <div class="row">
+
+        <!--   Icon Section   -->
+            <table class="bordered">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>directedBy</th>
+                    <th>producedBy</th>
+                    <th>starringBy</th>
+                    <th>genre</th>
+                    <th>year</th>
+                    <th>musicBy</th>
+                    <th>language_id</th>
+                    <th>youtube_id</th>
+                    <th>ref</th>
+                    <th>EditLink</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in list %}
+                    <tr>
+                        <td>{{item.title}}</td>
+                        <td>{{item.directedBy}}</td>
+                        <td>{{item.producedBy}}</td>
+                        <td>{{item.starringBy}}</td>
+                        <td>{{item.genre}}</td>
+                        <td>{{item.year}}</td>
+                        <td>{{item.musicBy}}</td>
+                        <td>{{item.language_id}}</td>
+                        <td>{{item.youtube_id}}</td>
+                        <td>{{item.ref}}</td>
+                        <td><a href="{{ url_for('movieEdit', movie_id=item.id) }}">Edit</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+          </div>
+        </div>
+    </div>
+
+{% endblock %}
