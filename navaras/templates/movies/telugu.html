@@ -4,11 +4,11 @@
 
 
     <div class="container">
-        <h4>Movies</h4>
+        <h4>Telugu</h4>
         <div>
-            <a class="waves-effect btn white grey-text">Hindi</a>
-            <a class="waves-effect btn white grey-text" href="{{url_for('telugu', genre='all', page=1) }}">Telugu</a>
-            <a class="waves-effect btn white grey-text">Tamil</a>
+            {% for genre in genres: %}
+            <a class="chip waves-effect" href="{{url_for('telugu', genre=genre.name, page=1) }}">{{genre.name}}</a>
+            {% endfor %}
         </div>
 
         <div class="section">
@@ -35,11 +35,11 @@
             <div class="col s12 m12 l12 center-align">
                 <ul class="pagination">
                     {% if movies.has_prev: %}
-                        <li class="waves-effect"><a href="{{ url_for('movies', page=movies.prev_num) }}"><i class="material-icons">chevron_left</i></a></li>
+                        <li class="waves-effect"><a href="{{ url_for('telugu', genre='all', page=movies.prev_num) }}"><i class="material-icons">chevron_left</i></a></li>
                     {% endif %}
                     <li><a>{{movies.page}}</a></li>
                     {% if movies.has_next: %}
-                        <li class="waves-effect"><a href="{{ url_for('movies', page=movies.next_num) }}"><i class="material-icons">chevron_right</i></a></li>
+                        <li class="waves-effect"><a href="{{ url_for('telugu', genre='all', page=movies.next_num) }}"><i class="material-icons">chevron_right</i></a></li>
                         <li><a>{{movies.pages}}</a></li>
                     {% endif %}
 

@@ -7,9 +7,9 @@ from flask import render_template, request, redirect, url_for
 from navaras import app
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, and_
 from flask_sqlalchemy import SQLAlchemy
-from databasenew import Movies
+from databasenew import Movies, Genre
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -30,15 +30,23 @@ def home():
         year=datetime.now().year,
     )
 
+@app.route('/movies/')
+@app.route('/movies/<int:page>')
+def movies(page=None):
 
-@app.route('/movies')
-def movies():
-    try:
-        #movies = dbsession.query(Movies).filter(Movies.youtube_id != None).all()
-        movies = Movies.query.filter(Movies.youtube_id != None).paginate(page=1, per_page=20)
+    if page:
+        try:
+            #movies = dbsession.query(Movies).filter(Movies.youtube_id != None).all()
+            movies = Movies.query.filter(Movies.youtube_id != None).paginate(page=page, per_page=20)
 
-    except NoResultFound:
-        None
+        except NoResultFound:
+            None
+    else:
+        try:
+            movies = Movies.query.filter(Movies.youtube_id != None).paginate(page=1, per_page=20)
+
+        except NoResultFound:
+            None
 
     return render_template('movies/index.html', movies=movies)
 
@@ -46,7 +54,7 @@ def movies():
 @app.route('/movies/list/<int:year>')
 def movielist(year):
     try:
-        movies = dbsession.query(Movies).filter(Movies.year == year).all()
+        movies = dbsession.query(Movies).filter(and_(Movies.year == year, Movies.youtube_id == None)).all()
     except NoResultFound:
         None
 
@@ -81,6 +89,22 @@ def movieEdit(movie_id):
     else:
         return render_template('/movies/edit.html', movie=movie)
 
+
+@app.route('/telugu/<string:genre>/<int:page>')
+def telugu(genre, page):
+    genres = dbsession.query(Genre).order_by(Genre.name).all()
+    if genre == 'all':
+        try:
+            movies = Movies.query.filter(and_(Movies.language_id == 2, Movies.youtube_id != None)).paginate(page=page, per_page=20)
+        except NoResultFound:
+            return redirect("movies")
+    else:
+        try:
+            movies = Movies.query.filter(and_(Movies.language_id == 2, Movies.genre.contains(genre), Movies.youtube_id != None)).paginate(page=page, per_page=20)
+        except:
+            return redirect("movies")
+
+    return render_template('movies/telugu.html', movies=movies, genres=genres)
 
 @app.route('/contact')
 def contact():

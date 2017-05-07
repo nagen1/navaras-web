@@ -23,7 +23,7 @@ print(pager)
 #for item in list.items:
  #   print(item.title)
 
-#genre = Movies.query.filter(Movies.genre.contains('drama'))
+genre = Movies.query.filter(Movies.genre.contains('drama'))
 
 #for gen in genre:
 #    print(gen.title, ":", gen.genre)
