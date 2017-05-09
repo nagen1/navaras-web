@@ -5,7 +5,7 @@
 {% block content %}
 
     <div class="container">
-        <h4>Movies</h4>
+        <h4>Search Results</h4>
         <div>
             <a class="waves-effect btn white grey-text">Hindi</a>
             <a class="waves-effect btn white grey-text" href="{{url_for('telugu', genre='all', page=1) }}">Telugu</a>
@@ -13,7 +13,6 @@
         </div>
 
         <div class="section">
-            <h5 style="padding-top:20px;">Recently Added:</h5>
         <div class="row">
 
         <!--   Icon Section   -->
@@ -36,11 +35,11 @@
             <div class="col s12 m12 l12 center-align">
                 <ul class="pagination">
                     {% if movies.has_prev: %}
-                        <li class="waves-effect"><a href="{{ url_for('movies', page=movies.prev_num) }}"><i class="material-icons">chevron_left</i></a></li>
+                        <li class="waves-effect"><a href="{{ url_for('search', page=movies.prev_num) }}"><i class="material-icons">chevron_left</i></a></li>
                     {% endif %}
                     <li><a>{{movies.page}}</a></li>
                     {% if movies.has_next: %}
-                        <li class="waves-effect"><a href="{{ url_for('movies', page=movies.next_num) }}"><i class="material-icons">chevron_right</i></a></li>
+                        <li class="waves-effect"><a href="{{ url_for('search', page=movies.next_num) }}"><i class="material-icons">chevron_right</i></a></li>
                         <li><a>{{movies.pages}}</a></li>
                     {% endif %}
 

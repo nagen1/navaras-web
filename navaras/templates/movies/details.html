@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %} {{movie.title }} {% endblock %}
+
+{% block content %}
+
+
+    <div class="container">
+
+
+        <div class="section">
+                <div class="row">
+
+                <!--   Icon Section   -->
+                    <div class="col s6 m4 l3">
+                        <a href="{{url_for('moviedetail', movie_id = movie.id) }}">
+                            <div class="card hoverable">
+                                <div class="card-image">
+                                    <img src="{{ movie.yt_thumbnail}}">
+                                </div>
+                                <div class="card-content" style="padding: 15px;">
+                                    <span class="grey-text text-darken-4">{{ movie.title }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+{% endblock %}

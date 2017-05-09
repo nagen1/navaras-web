@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
-
+{% block title %} Telugu Movies {% endblock %}
 {% block content %}
 
 
     <div class="container">
-        <h4>Telugu</h4>
+        <h4>Telugu Movies</h4>
         <div>
             {% for genre in genres: %}
             <a class="chip waves-effect" href="{{url_for('telugu', genre=genre.name, page=1) }}">{{genre.name}}</a>
@@ -12,7 +12,7 @@
         </div>
 
         <div class="section">
-            <h6>Recently Added:</h6>
+            <h5 style="padding-top:20px;">Recently Added:</h5>
         <div class="row">
 
         <!--   Icon Section   -->

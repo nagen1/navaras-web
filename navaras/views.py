@@ -3,12 +3,11 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, jsonify
 from navaras import app
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import create_engine, and_
-from flask_sqlalchemy import SQLAlchemy
 from databasenew import Movies, Genre
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -77,10 +76,12 @@ def movieEdit(movie_id):
         movie.year = request.form['year']
         movie.musicBy = request.form['musicBy']
         movie.language_id = request.form['language_id']
-        movie.youtube_id = request.form['youtube_id']
+        yt_link = request.form['youtube_id']
+        yt_id = yt_link.split("?v=")
+        movie.youtube_id = yt_id[1]
         movie.ref = request.form['ref']
-        movie.yt_thumbnail = 'http://img.youtube.com/vi/'+movie.youtube_id+'/mqdefault.jpg'
-        movie.yt_videolink = 'https://www.youtube.com/embed/'+movie.youtube_id
+        movie.yt_thumbnail = 'http://img.youtube.com/vi/'+yt_id[1]+'/mqdefault.jpg'
+        movie.yt_videolink = 'https://www.youtube.com/embed/'+yt_id[1]
         dbsession.add(movie)
         dbsession.commit()
 
@@ -105,6 +106,51 @@ def telugu(genre, page):
             return redirect("movies")
 
     return render_template('movies/telugu.html', movies=movies, genres=genres)
+
+@app.route('/movies/details/<int:movie_id>')
+def moviedetail(movie_id=None):
+
+    try:
+        movie = dbsession.query(Movies).filter(Movies.id == movie_id).one()
+    except NoResultFound:
+        redirect('movies')
+
+    return render_template('movies/details.html', movie=movie)
+
+
+@app.route('/autocomplete', methods=['GET'])
+def autcomplete():
+    search = request.args.get('search')
+
+    if search:
+        try:
+            results = dbsession.query(Movies).filter(Movies.title.like('%'+search+'%')).limit(10)
+            temp = [r.serialize for r in results]
+            return jsonify(results=[r.serialize for r in results])
+        except NoResultFound:
+            error = 'No Results found!'
+            return render_template('movies/search.html', error=error)
+
+
+@app.route('/movies/search')
+@app.route('/movies/search/<int:page>', methods=['GET', 'POST'])
+def search(page=None):
+    if request.method == 'POST':
+        lookup = request.form['autocomplete']
+        if page:
+            try:
+                movies = Movies.query.filter(and_(Movies.title.like('%'+lookup+'%'), Movies.youtube_id != None)).paginate(page=page, per_page=20)
+            except NoResultFound:
+                    None
+        else:
+            try:
+                movies = Movies.query.filter(Movies.youtube_id != None).paginate(page=1, per_page=20)
+            except NoResultFound:
+                None
+        return render_template('movies/search.html', movies=movies)
+    else:
+        return redirect('home')
+
 
 @app.route('/contact')
 def contact():

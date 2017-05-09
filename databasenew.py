@@ -1,5 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, func, Table
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from flask import Flask
@@ -44,6 +43,12 @@ class Movies(Base.Model):
     ref = Column(String, nullable=True)
     language = relationship('Language', foreign_keys=[language_id])
 
+    @property
+    def serialize(self):
+        return {
+            'value': self.id,
+            'label': self.title,
+        }
 
 engine = create_engine('sqlite:///navaras_qa.db')
 Base.metadata.create_all(engine)
