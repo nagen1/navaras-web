@@ -107,6 +107,30 @@ def telugu(genre, page):
 
     return render_template('movies/telugu.html', movies=movies, genres=genres)
 
+
+@app.route('/movies/hindi')
+def hindi():
+    return render_template('/movies/hindi.html')
+
+
+@app.route('/movies/tamil')
+def tamil():
+    return render_template('/movies/tamil.html')
+
+@app.route('/trailers')
+def trailers():
+    return render_template('/trailers/trailers.html')
+
+@app.route('/tv')
+def tv():
+    return render_template('/tv/tv.html')
+
+@app.route('/shortfilms')
+def shortfilms():
+    return render_template('/shortfilms/shortfilms.html')
+
+
+
 @app.route('/movies/details/<int:movie_id>')
 def moviedetail(movie_id=None):
 
@@ -124,8 +148,7 @@ def autcomplete():
 
     if search:
         try:
-            results = dbsession.query(Movies).filter(Movies.title.like('%'+search+'%')).limit(10)
-            temp = [r.serialize for r in results]
+            results = dbsession.query(Movies).filter(and_(Movies.title.like('%'+search+'%'), Movies.youtube_id != None)).limit(10)
             return jsonify(results=[r.serialize for r in results])
         except NoResultFound:
             error = 'No Results found!'
@@ -141,7 +164,7 @@ def search(page=None):
             try:
                 movies = Movies.query.filter(and_(Movies.title.like('%'+lookup+'%'), Movies.youtube_id != None)).paginate(page=page, per_page=20)
             except NoResultFound:
-                    None
+                None
         else:
             try:
                 movies = Movies.query.filter(Movies.youtube_id != None).paginate(page=1, per_page=20)
@@ -162,7 +185,7 @@ def contact():
         message='Your contact page.'
     )
 
-@app.route('/about')
+''''@app.route('/about')
 def about():
     """Renders the about page."""
     return render_template(
@@ -171,3 +194,4 @@ def about():
         year=datetime.now().year,
         message='Your application description page.'
     )
+'''

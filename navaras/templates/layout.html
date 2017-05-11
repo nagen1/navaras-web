@@ -34,12 +34,13 @@
         <div class="navbar-fixed">
             <nav class="white" role="navigation">
                 <div class="nav-wrapper">
-                    <a href="/" class="left hide-on-med-and-down"><img src="{{ url_for('static', filename='images/navaras.png') }}" style="height:60px; width:55px; padding-left: 5px;"></a>
+                    <a href="/" class="left hide-on-med-and-down"><img src="{{ url_for('static', filename='images/navaras.png') }}" style="height:45px; width:45px; padding-left: 5px;"></a>
                     <!--a href="#" data-activates="slide-out" class="collapse left hide-on-med-and-down black-text" style="padding-left: 10px;"><i class="material-icons">menu</i></a-->
                     <ul class="right hide-on-med-and-down">
                         <li><a href="{{ url_for('movies', page=1 )}}">Movies</a></li>
-                        <li><a href="#">Trailers</a></li>
-                        <li><a href="#">Short-Films</a></li>
+                        <li><a href="{{ url_for('trailers') }}">Trailers</a></li>
+                        <li><a href="{{ url_for('tv') }}">TV</a></li>
+                        <li><a href="{{ url_for('shortfilms') }}">Short Films</a></li>
                     </ul>
                     <form action="/movies/search/1" method="POST" class="brand-logo center black-text" style="width: 300px;">
                         <div class="input-field">
@@ -63,8 +64,8 @@
 
     <footer class="page-footer teal" style="padding-top:0px;">
         <div class="footer-copyright">
-            <div class="container">
-                Made by <a class="brown-text text-lighten-3" href="#">navaras</a>
+            <div class="container center">
+                Made by <a class="brown-text text-lighten-3" href="#">navaras © 2017 Copyright</a>
             </div>
         </div>
     </footer>

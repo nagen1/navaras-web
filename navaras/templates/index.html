@@ -6,17 +6,17 @@
 
 <div id="index-banner" class="parallax-container">
     <div class="section no-pad-bot">
-      <div class="container">
+      <!--div class="container">
         <br><br>
-        <h1 class="header center teal-text text-lighten-2">Welcome to navaras</h1>
+        <h1 class="header center black-text text-lighten-2">Welcome to navaras</h1>
         <div class="row center">
           <h5 class="header col s12 light">just watch movies, trailer, TV Shows, Short Films</h5>
         </div>
         <br><br>
 
-      </div>
+      </div-->
     </div>
-    <div class="parallax"><img src="http://materializecss.com/templates/parallax-template/background1.jpg" alt="Unsplashed background img 1"></div>
+    <div class="parallax"><img src="{{ url_for('static', filename='images/social-home.jpg') }}"></div>
   </div>
 
 
@@ -30,37 +30,37 @@
           <div class="icon-block">
             <h2 class="center brown-text"><i class="material-icons">movie</i></h2>
             <h5 class="center">Movies</h5>
-            <p class="light center-align">Share your smart Ideas, Discuss to improve and turn it into Featured Idea</p>
+            <p class="light center-align"></p>
           </div>
 		  </a>
         </div>
 
         <div class="col s12 m4 l3">
-          <a href="#" class="black-text">
+          <a href="{{ url_for('trailers') }}" class="black-text">
           <div class="icon-block">
             <h2 class="center brown-text"><i class="material-icons">movie_filter</i></h2>
             <h5 class="center">Trailers</h5>
-            <p class="light center-align">Collaborate with other team members, Help each other, Questions, Threads and Discussions.</p>
+            <p class="light center-align"></p>
           </div>
           </a>
         </div>
 
         <div class="col s12 m4 l3">
-          <a href="#" class="black-text">
+          <a href="{{ url_for('tv') }}" class="black-text">
           <div class="icon-block">
             <h2 class="center brown-text"><i class="material-icons">tv</i></h2>
             <h5 class="center">TV</h5>
-            <p class="light center-align">Ideas that turned into tools by team members. Share your solutions that's being implemented in your project.</p>
+            <p class="light center-align"></p>
           </div>
             </a>
         </div>
 
 		<div class="col s12 m4 l3">
-          <a href="#" class="black-text">
+          <a href="{{ url_for('shortfilms') }}" class="black-text">
             <div class="icon-block">
               <h2 class="center brown-text"><i class="material-icons">touch_app</i></h2>
               <h5 class="center">Short Films</h5>
-              <p class="light center-align">Data Gathering and Analysis. Connect with management, Poll, Survey and Announcements </p>
+              <p class="light center-align"></p>
             </div>
           </a>
         </div>

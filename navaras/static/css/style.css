@@ -82,7 +82,7 @@ span.badges {
   box-sizing: border-box;
 }
 
-/*nav {
+nav {
     height: 45px;
     line-height: 45px;
 }
@@ -112,4 +112,14 @@ nav .brand-logo {
     .navbar-fixed {
         height: 45px;
     }
-}*/
+}
+
+  body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
