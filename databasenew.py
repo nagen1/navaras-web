@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, func, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from flask import Flask
@@ -41,6 +41,8 @@ class Movies(Base.Model):
     yt_thumbnail = Column(String, nullable=True)
     yt_videolink = Column(String, nullable=True)
     ref = Column(String, nullable=True)
+    createdDate = Column(DateTime(timezone=True), server_default=func.now(), default=True)
+    updatedDate = Column(DateTime(timezone=True), onupdate=func.now())
     language = relationship('Language', foreign_keys=[language_id])
 
     @property

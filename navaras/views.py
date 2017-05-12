@@ -36,7 +36,7 @@ def movies(page=None):
     if page:
         try:
             #movies = dbsession.query(Movies).filter(Movies.youtube_id != None).all()
-            movies = Movies.query.filter(Movies.youtube_id != None).paginate(page=page, per_page=20)
+            movies = Movies.query.filter(Movies.youtube_id != None).order_by(Movies.title).paginate(page=page, per_page=20)
 
         except NoResultFound:
             None
