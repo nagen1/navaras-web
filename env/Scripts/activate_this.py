@@ -2,6 +2,7 @@
 activate this virtualenv environment.
 This can be used when you must use an existing Python interpreter, not
 the virtualenv bin/python
+--- Testing new change ---
 """
 
 try:
