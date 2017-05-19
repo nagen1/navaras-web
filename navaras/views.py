@@ -3,13 +3,15 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request, redirect, url_for, jsonify
+from flask import render_template, request, redirect, url_for, jsonify, session, flash
 from navaras import app
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import create_engine, and_
 from databasenew import Movies, Genre
 from sqlalchemy.ext.declarative import declarative_base
+from flask_login import LoginManager
+from functools import wraps
 
 
 Base = declarative_base()
@@ -18,6 +20,56 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 dbsession = DBSession()
+
+#------------------------- Login -----------------------------
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+#------------------------- LOGIN Functionality-----------------
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("you need to login first:")
+            return redirect(url_for('login'))
+
+    return wrap
+
+@login_manager.user_loader
+def load_user(user_id):
+    return user_id
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+
+    if request.method == 'POST':
+        loginId = request.form['username']
+        passd = request.form['password']
+        if loginId == 'update@navaras.com':
+            if passd == '!Well123':
+                session['logged_in'] = True
+                session['user_id'] = loginId
+
+                return redirect(url_for('movielist'))
+        else:
+            error = 'Invalid user Credentials'
+            return render_template('auth/login.html', error=error), 400
+
+    return render_template('auth/login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+
+    return render_template('index.html')
+
+#-----------Core functionality------------
 
 @app.route('/')
 @app.route('/home')
@@ -50,45 +102,60 @@ def movies(page=None):
     return render_template('movies/index.html', movies=movies)
 
 
+@app.route('/movies/list')
+@app.route('/movies/list/')
 @app.route('/movies/list/<int:year>')
-def movielist(year):
-    try:
-        movies = dbsession.query(Movies).filter(and_(Movies.year == year, Movies.youtube_id == None)).all()
-    except NoResultFound:
-        None
+@login_required
+def movielist(year=None):
+    if session['user_id']:
+        if year:
+            try:
+                movies = dbsession.query(Movies).filter(and_(Movies.year == year, Movies.youtube_id == None)).all()
+            except NoResultFound:
+                None
 
-    return render_template('movies/list.html', list=movies)
+            return render_template('movies/list.html', list=movies)
+        else:
+            return redirect(url_for('home'))
+    else:
+        return redirect(url_for('login'))
+
 
 
 @app.route('/movieEdit/<int:movie_id>', methods=['GET','POST'])
+@login_required
 def movieEdit(movie_id):
-    try:
-        movie = dbsession.query(Movies).filter(Movies.id == movie_id).one()
-    except NoResultFound:
-        None
 
-    if request.method == 'POST':
-        movie.title = request.form['title']
-        movie.directedBy = request.form['directedBy']
-        movie.producedBy = request.form['producedBy']
-        movie.starringBy = request.form['starringBy']
-        movie.genre = request.form['genre']
-        movie.year = request.form['year']
-        movie.musicBy = request.form['musicBy']
-        movie.language_id = request.form['language_id']
-        yt_link = request.form['youtube_id']
-        yt_id = yt_link.split("?v=")
-        movie.youtube_id = yt_id[1]
-        movie.ref = request.form['ref']
-        movie.yt_thumbnail = 'http://img.youtube.com/vi/'+yt_id[1]+'/mqdefault.jpg'
-        movie.yt_videolink = 'https://www.youtube.com/embed/'+yt_id[1]
-        dbsession.add(movie)
-        dbsession.commit()
+    if session['user_id']:
+        try:
+            movie = dbsession.query(Movies).filter(Movies.id == movie_id).one()
+        except NoResultFound:
+            None
 
-        return redirect(url_for('movielist', year=movie.year), code=302)
+        if request.method == 'POST':
+            movie.title = request.form['title']
+            movie.directedBy = request.form['directedBy']
+            movie.producedBy = request.form['producedBy']
+            movie.starringBy = request.form['starringBy']
+            movie.genre = request.form['genre']
+            movie.year = request.form['year']
+            movie.musicBy = request.form['musicBy']
+            movie.language_id = request.form['language_id']
+            yt_link = request.form['youtube_id']
+            yt_id = yt_link.split("?v=")
+            movie.youtube_id = yt_id[1]
+            movie.ref = request.form['ref']
+            movie.yt_thumbnail = 'http://img.youtube.com/vi/'+yt_id[1]+'/mqdefault.jpg'
+            movie.yt_videolink = 'https://www.youtube.com/embed/'+yt_id[1]
+            dbsession.add(movie)
+            dbsession.commit()
 
+            return redirect(url_for('movielist', year=movie.year), code=302)
+
+        else:
+            return render_template('/movies/edit.html', movie=movie)
     else:
-        return render_template('/movies/edit.html', movie=movie)
+        return redirect(url_for('home'))
 
 
 @app.route('/telugu/<string:genre>/<int:page>')
