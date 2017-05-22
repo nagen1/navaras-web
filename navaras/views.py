@@ -110,7 +110,8 @@ def movielist(year=None):
     if session['user_id']:
         if year:
             try:
-                movies = dbsession.query(Movies).filter(and_(Movies.year == year, Movies.youtube_id == None)).all()
+                #movies = dbsession.query(Movies).filter(and_(Movies.year == year, Movies.youtube_id == None)).all()
+                movies = Movies.query.filter(and_(Movies.year == year, Movies.youtube_id == None)).all()
             except NoResultFound:
                 None
 
@@ -128,7 +129,8 @@ def movieEdit(movie_id):
 
     if session['user_id']:
         try:
-            movie = dbsession.query(Movies).filter(Movies.id == movie_id).one()
+            #movie = dbsession.query(Movies).filter(Movies.id == movie_id).one()
+            movie = Movies.query.filter(Movies.id == movie_id).one()
         except NoResultFound:
             None
 
@@ -202,7 +204,8 @@ def shortfilms():
 def moviedetail(movie_id=None):
 
     try:
-        movie = dbsession.query(Movies).filter(Movies.id == movie_id).one()
+        #movie = dbsession.query(Movies).filter(Movies.id == movie_id).one()
+        movie = Movies.query.filter(Movies.id == movie_id).one()
     except NoResultFound:
         redirect('movies')
 
