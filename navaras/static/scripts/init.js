@@ -1,7 +1,8 @@
 
 $(document).ready(function(){
-    $('.collapse').sideNav();
+    //$('.collapse').sideNav();
     $('.parallax').parallax();
+    $(".button-collapse").sideNav({menuWidth: 200});
     $('.carousel.carousel-slider').carousel({fullWidth: true});
     // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
     //$('.modal-trigger').leanModal();
