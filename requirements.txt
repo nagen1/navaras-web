@@ -10,4 +10,4 @@ jinja2==2.9.5
 mako==1.0.6
 markupsafe==0.23
 sqlalchemy==1.1.4
-werkzeug==0.11.15
+werkzeug==0.15.3
