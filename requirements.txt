@@ -1,6 +1,6 @@
 alembic==0.9.0
 click==6.7
-flask==0.12
+flask==1.0
 flask-login==0.4.0
 flask-migrate==2.0.3
 flask-script==2.0.5
